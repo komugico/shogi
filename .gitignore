@@ -1,0 +1,11 @@
+# React
+src/shogi/resources/react/node_modules/
+src/webgame/**/.DS_Store
+
+# Django
+src/shogi/*.log
+src/shogi/*.pot
+src/shogi/*.pyc
+src/shogi/shogi/conf.py
+src/shogi/**/__pycache__/
+src/shogi/resources/static/js/
