@@ -1,1 +1,17 @@
-<h1>Home</h1>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block stylesheet %}{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+
+    <h1>Hello, Django!!</h1>
+    <div id="home"></div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/home_index.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/share/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/share/bootstrap-grid.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/share/bootstrap-reboot.min.css' %}">
+    {% block stylesheet %}{% endblock %}
+    <title>{% block title %}{% endblock %} | Web Game</title>
+  </head>
+  <body>
+    {% if user.is_authenticated %}
+      <div id="username" type="hidden" style="display: none">{{ user.get_username }}</div>
+    {% endif %}
+
+    <div id="header"></div>
+    {% block content %}{% endblock %}
+    <script src="{% static 'js/share_header.js' %}"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>
