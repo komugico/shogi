@@ -33,7 +33,7 @@ class Header extends React.Component {
                 <ButtonToolbar>
                     <ButtonGroup>
                         <Button variant="outline-secondary" href="#">{this.props.username}</Button>
-                        <Button variant="outline-danger" href="/accounts/logout/">Logout</Button>
+                        <Button variant="outline-danger" href="/shogi/accounts/logout/">Logout</Button>
                     </ButtonGroup>
                 </ButtonToolbar>
             );
