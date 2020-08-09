@@ -131,4 +131,4 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'resources/static'),
 ]
 
-LOGIN_REDIRECT_URL = 'shogi/home/'
+LOGIN_REDIRECT_URL = '/shogi/home/'
