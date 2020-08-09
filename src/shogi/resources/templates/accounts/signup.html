@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'share/form.html' %}
+        <button type="submit" class="btn btn-primary">Create an account</button>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

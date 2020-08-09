@@ -12,9 +12,6 @@ class Header extends React.Component {
             return (
                 <Nav className="mr-auto">
                     <Nav.Link href="/shogi/home/">ホーム</Nav.Link>
-                    <NavDropdown title="メニュー" id="basic-nav-dropdown">
-                        <NavDropdown.Item href="#">対局</NavDropdown.Item>
-                    </NavDropdown>
                 </Nav>
             );
         }
@@ -45,8 +42,8 @@ class Header extends React.Component {
             return (
                 <ButtonToolbar>
                     <ButtonGroup>
-                        <Button variant="outline-primary" href="/accounts/login/">Login</Button>
-                        <Button variant="outline-success" href="/accounts/signup/">Signup</Button>
+                        <Button variant="outline-primary" href="/shogi/accounts/login/">Login</Button>
+                        <Button variant="outline-success" href="/shogi/accounts/signup/">Signup</Button>
                     </ButtonGroup>
                 </ButtonToolbar>
             );
@@ -59,7 +56,7 @@ class Header extends React.Component {
 
         return (
             <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="/shogi/home/">将棋</Navbar.Brand>
+                <Navbar.Brand href="/shogi/">将棋</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     {navbarContent}

@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path("shogi/home/", include("home.urls")),
-    path('shogi/admin/', admin.site.urls),
+    path("shogi/", include("home.urls")),
+    path("shogi/accounts/", include("django.contrib.auth.urls")),
+    path("shogi/accounts/", include("accounts.urls")),
+    path("shogi/admin/", admin.site.urls),
 ]

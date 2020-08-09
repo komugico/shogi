@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'share/form.html' %}
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

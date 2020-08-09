@@ -1,3 +1,6 @@
+# Database
+src/shogi/db.sqlite3
+
 # React
 src/shogi/resources/react/node_modules/
 src/webgame/**/.DS_Store
