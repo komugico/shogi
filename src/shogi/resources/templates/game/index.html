@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Game{% endblock %}
+
+{% block stylesheet %}{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+
+    <h1>ゲーム画面</h1>
+    <div id="main"></div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/game_index.js' %}"></script>
+{% endblock %}

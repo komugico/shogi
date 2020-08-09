@@ -4,7 +4,11 @@ const path = require('path');
 module.exports = {
     // 読み込むjsxファイルの名前と読み込み場所の設定
     entry: {
+        // Home
         home_index: path.resolve(__dirname, "src/home/index.jsx"),
+        // Game
+        game_index: path.resolve(__dirname, "src/game/index.jsx"),
+        // Share
         share_header: path.resolve(__dirname, "src/share/header.jsx"),
     },
     // 出力するjsファイルの場所と名前の設定

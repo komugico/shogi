@@ -18,6 +18,7 @@ from django.urls import include, path
 
 urlpatterns = [
     path("shogi/", include("home.urls")),
+    path("shogi/game/", include("game.urls")),
     path("shogi/accounts/", include("django.contrib.auth.urls")),
     path("shogi/accounts/", include("accounts.urls")),
     path("shogi/admin/", admin.site.urls),
