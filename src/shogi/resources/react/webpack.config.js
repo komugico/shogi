@@ -8,6 +8,7 @@ module.exports = {
         home_index: path.resolve(__dirname, "src/home/index.jsx"),
         // Game
         game_index: path.resolve(__dirname, "src/game/index.jsx"),
+        game_kifu: path.resolve(__dirname, "src/game/kifu.jsx"),
         // Share
         share_header: path.resolve(__dirname, "src/share/header.jsx"),
     },

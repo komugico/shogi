@@ -5,4 +5,5 @@ app_name = "game"
 
 urlpatterns = [
     path("", views.IndexView.as_view(), name="index"),
+    path("kifu", views.KifuView.as_view(), name="kifu-index")
 ]
