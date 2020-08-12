@@ -29,17 +29,17 @@ export class Shogi extends React.Component {
     render() {
         return (
             <Row>
-                <Col xl={2} lg={2} md={2} sm={12} xs={12}>
+                <Col xl={3} lg={3} md={3} sm={12} xs={12}>
                     <Komadai />
                     <UserInfo />
                 </Col>
-                <Col  xl={8} lg={8} md={8} sm={12} xs={12}>
+                <Col  xl={6} lg={6} md={6} sm={12} xs={12}>
                     <Board
                         komas={this.state.komas}
                         teban={this.state.teban}
                     />
                 </Col>
-                <Col  xl={2} lg={2} md={2} sm={12} xs={12}>
+                <Col  xl={3} lg={3} md={3} sm={12} xs={12}>
                     <UserInfo />
                     <Komadai />
                 </Col>

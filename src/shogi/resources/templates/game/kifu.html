@@ -9,7 +9,10 @@
 
 {% block content %}
     {% csrf_token %}
-    <img src="/static/img/koma_ichiji.bmp" style="display:none" />
+    <img src="/static/img/koma_ichiji_touka.bmp" style="display:none" />
+    <audio id="audio-komaoto" preload="auto">
+        <source src="/static/audio/komaoto5.wav" type="audio/wav">
+    </audio>
 
     <div id="main"></div>
 {% endblock %}

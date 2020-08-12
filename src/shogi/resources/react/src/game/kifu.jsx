@@ -17,10 +17,10 @@ class Kifu extends React.Component {
             <Container fluid>
                 <br />
                 <Row>
-                    <Col xl={3} lg={3} md={3} sm={12} xs={12}>
+                    <Col xl={2} lg={2} md={2} sm={12} xs={12}>
                         <KifuMenu />
                     </Col>
-                    <Col xl={9} lg={9} md={9} sm={12} xs={12}>
+                    <Col xl={10} lg={10} md={10} sm={12} xs={12}>
                         <Shogi />
                     </Col>
                 </Row>
