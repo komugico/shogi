@@ -88,8 +88,8 @@
     background: #ffac54;
 }
 
-.masu-move {                    /* 移動可能なマス目 */
-    background: #74493b;
+.masu-action {                    /* 移動可能なマス目 */
+    background: #93ca76;
 }
 
 .masu-final {                   /* 最終手のマス目 */

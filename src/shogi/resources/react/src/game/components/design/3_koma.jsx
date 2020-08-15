@@ -5,23 +5,31 @@ import { Col } from 'react-bootstrap';
 export class Koma extends React.Component {
     constructor() {
         super();
+
+        this.handleClick = this.handleClick.bind(this);
     }
 
     handleClick() {
-        let komaoto = new Audio();
-        komaoto.src = "/static/audio/komaoto5.wav";
-        komaoto.play()
+        if (this.props.action == false) {
+            this.props.handleGrabKoma(this.props.x, this.props.y);
+        }
+        else {
+            let komaoto = new Audio();
+            komaoto.src = "/static/audio/komaoto5.wav";
+            komaoto.play();
+            this.props.handleAction(this.props.x, this.props.y);
+        }
     }
 
     render() {
         return (
             <Col class-name="masu-col">
-                <button className="masu">
+                <button className={this.props.action == true ? "masu masu-action" : "masu"}>
                     <p className="koma">
                         <img
                             className="koma-img"
                             src="/static/img/koma_ichiji_touka.bmp"
-                            style={{ top: "0px", left: "0px" }}
+                            style={this.props.koma.get_css_style(this.props.owner)}
                             onClick={this.handleClick}
                         />
                     </p>

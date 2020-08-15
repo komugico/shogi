@@ -22,13 +22,21 @@ export class Board extends React.Component {
 
     renderKoma(x, y, koma) {
         return (
-            <Koma />
+            <Koma
+                x={x}
+                y={y}
+                koma={koma}
+                owner={this.props.owners[y][x]}
+                action={this.props.action_board[y][x]}
+                handleGrabKoma={this.props.handleGrabKoma}
+                handleAction={this.props.handleAction}
+            />
         )
     }
 
     renderMarginTop() {
         let suji = null;
-        if (this.props.teban == 0) {
+        if (this.props.teban == 1) {
             // 先手番
             suji = ["９", "８", "７", "６", "５", "４", "３", "２", "１"];
         }
@@ -69,7 +77,7 @@ export class Board extends React.Component {
 
     renderMarginRight(y) {
         let dan = null;
-        if (this.props.teban == 0) {
+        if (this.props.teban == 1) {
             // 先手番
             dan = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
         }

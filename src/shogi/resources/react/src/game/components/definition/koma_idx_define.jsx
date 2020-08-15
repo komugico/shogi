@@ -1,0 +1,16 @@
+export const KOMA_IDX_NONE      = -1
+export const KOMA_IDX_FU        = 0
+export const KOMA_IDX_KYOSHA    = 1
+export const KOMA_IDX_KEIMA     = 2
+export const KOMA_IDX_GIN       = 3
+export const KOMA_IDX_KIN       = 4
+export const KOMA_IDX_KAKU      = 5
+export const KOMA_IDX_HISHA     = 6
+export const KOMA_IDX_OU        = 7
+export const KOMA_IDX_GYOKU     = 8
+export const KOMA_IDX_TOKIN     = 10
+export const KOMA_IDX_NARIKYO   = 11
+export const KOMA_IDX_NARIKEI   = 12
+export const KOMA_IDX_NARIGIN   = 13
+export const KOMA_IDX_UMA       = 15
+export const KOMA_IDX_RYU       = 16
