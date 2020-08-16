@@ -125,13 +125,10 @@ export class ShogiLogic {
             mochigoma = this.mochigoma_2;
         }
         let putable_positions = mochigoma.grab(koma_idx, this.board.getOwners(), this.teban);
-        console.dir("a");
         if (putable_positions) {
             this.state = ShogiLogic.STATE_GRAB_MOCHIGOMA;
             // 二歩禁止
-            console.dir("b");
             if (koma_idx == KOMA_IDX_FU) {
-                console.dir("c");
                 let new_putable_positions = mochigoma.grabbed.nifuCheck(
                     this.board.getKomas(),
                     this.board.getOwners(),

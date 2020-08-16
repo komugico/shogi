@@ -12,6 +12,9 @@ class Header extends React.Component {
             return (
                 <Nav className="mr-auto">
                     <Nav.Link href="/shogi/home/">ホーム</Nav.Link>
+                    <NavDropdown title="メニュー" id="basic-nav-dropdown">
+                        <NavDropdown.Item href="/shogi/game/kifu">棋譜作成</NavDropdown.Item>
+                    </NavDropdown>
                 </Nav>
             );
         }
@@ -19,9 +22,6 @@ class Header extends React.Component {
             return (
                 <Nav className="mr-auto">
                     <Nav.Link href="/shogi/home/">ホーム</Nav.Link>
-                    <NavDropdown title="メニュー" id="basic-nav-dropdown">
-                        <NavDropdown.Item href="#">対局</NavDropdown.Item>
-                    </NavDropdown>
                 </Nav>
             );
         }
