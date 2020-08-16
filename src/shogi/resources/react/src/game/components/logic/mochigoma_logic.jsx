@@ -24,13 +24,38 @@ export class MochigomaLogic {
         this.mochigomas = new Array(7).fill(0);
         this.grabbed = null;
     }
+    
+    static getKoma(koma_idx) {
+        switch (koma_idx) {
+            case KOMA_IDX_FU:
+                return new FuLogic();
+            case KOMA_IDX_KYOSHA:
+                return new KyoshaLogic();
+            case KOMA_IDX_KEIMA:
+                return new KeimaLogic();
+            case KOMA_IDX_GIN:
+                return new GinLogic();
+            case KOMA_IDX_KIN:
+                return new KinLogic();
+            case KOMA_IDX_KAKU:
+                return new KakuLogic();
+            case KOMA_IDX_HISHA:
+                return new HishaLogic();
+            default:
+                return null;
+        }
+    }
+
+    getKomakazu(koma_idx) {
+        return this.mochigomas[koma_idx];
+    }
 
     stock(koma_idx) {
         this.mochigomas[koma_idx] += 1;
         return true;
     }
 
-    grab(koma_idx, board) {
+    grab(koma_idx, owners, player) {
         if (koma_idx >= KOMA_IDX_FU && koma_idx <= KOMA_IDX_HISHA) {
             if (this.mochigomas[koma_idx] > 0) {
                 switch (koma_idx) {
@@ -56,9 +81,10 @@ export class MochigomaLogic {
                         this.grabbed = new HishaLogic();
                         break;
                     default:
+                        this.grabbed = null;
                         return null;
                 }
-                return this.grabbed.put(board);
+                return this.grabbed.put(owners, player);
             }
             else {
                 return null;
@@ -69,13 +95,20 @@ export class MochigomaLogic {
         }
     }
 
-    put(koma_idx) {
-        if (this.mochigomas[koma_idx] > 0) {
-            this.mochigomas[koma_idx] -= 1;
-            return true;
+    pickGrabbedKoma() {
+        if (this.grabbed) {
+            if (this.mochigomas[this.grabbed.koma_idx] > 0) {
+                this.mochigomas[this.grabbed.koma_idx] -= 1;
+                let koma = this.grabbed.clone();
+                this.grabbed = null;
+                return koma;
+            }
+            else {
+                return null;
+            }
         }
         else {
-            return false;
+            return null;
         }
     }
 }

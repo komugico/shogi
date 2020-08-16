@@ -23,25 +23,44 @@ import {
     KOMA_IDX_RYU
 } from '../definition/koma_idx_define.jsx';
 
+/**
+ * 駒ロジックの親クラス
+ */
 class KomaLogic {
+    /**
+     * 駒ロジックのコンストラクタ
+     * 
+     * @param {number} koma_idx     共通の駒インデックス
+     * @param {string} short_name   駒の略称
+     * @param {string} long_name    駒の名称
+     * @param {number} top          駒画像の上位置
+     * @param {number} left         駒画像の左位置
+     */
     constructor(koma_idx, short_name, long_name, top, left) {
-        this.koma_idx = koma_idx;
-        this.short_name = short_name;
-        this.long_name = long_name;
-        this.top = top;
-        this.left = left;
+        /** 共通の駒インデックス */ this._koma_idx = koma_idx;
+        /** 駒の略称             */ this._short_name = short_name;
+        /** 駒の名称             */ this._long_name = long_name;
+        /** 駒画像の上位置       */ this._top = top;
+        /** 駒画像の左位置       */ this._left = left;
     }
 
-    // Getter
-    get koma_idx() { return this._koma_idx; }
-    get short_name() { return this._short_name; }
-    get long_name() { return this._long_name; }
+    /** @type {number} */ get koma_idx() { return this._koma_idx; }
+    /** @type {string} */ get short_name() { return this._short_name; }
+    /** @type {string} */ get long_name() { return this._long_name; }
+    /** @type {number} */ get top() { return this._top; }
+    /** @type {number} */ get left() { return this._left; }
 
-    // Setter
-    set koma_idx(koma_idx) { this._koma_idx = koma_idx; }
-    set short_name(short_name) { this._short_name = short_name; }
-    set long_name(long_name) { this._long_name = long_name; }
+    /** @type {number} */ set koma_idx(koma_idx) { this._koma_idx = koma_idx; }
+    /** @type {string} */ set short_name(short_name) { this._short_name = short_name; }
+    /** @type {string} */ set long_name(long_name) { this._long_name = long_name; }
+    /** @type {number} */ set top(top) { this._top = top; }
+    /** @type {number} */ set left(left) { this._left = left; }
 
+    /**
+     * 駒のCSSスタイルを提供する関数
+     * 
+     * @param {number} owner    駒の所有者
+     */
     get_css_style(owner) {
         if (owner == O_2) {
             // 相手駒の場合反対向きで表示
@@ -59,24 +78,32 @@ class KomaLogic {
         }
     }
 
-    basic_move(board, player, x, y, directions) {
-        // Private Method
-        // 隣接箇所への移動（桂馬のジャンプも可能）
-        
+    /**
+     * 隣接箇所への移動可否を判断する関数
+     * 
+     * @param {number[][]} owners       駒の所有者情報を示す盤面
+     * @param {number} player           手番のプレイヤー
+     * @param {number} x                駒のX座標
+     * @param {number} y                駒のY座標
+     * @param {number[][]} directions   移動可能な方向
+     * 
+     * @return {number[][]}             移動可否を示す盤面
+     */
+    basic_move(owners, player, x, y, directions) {
         // 1. 移動可能場所の格納配列作成
-        let movable_board = new Array(9);
+        let movables = new Array(9);
         for (let idx = 0; idx < 9; idx++) {
-            movable_board[idx] = new Array(9).fill(false);
+            movables[idx] = new Array(9).fill(false);
         }
         // 2. 所有情報の確認（駒の所有者でなければ移動不可）
-        if (board[y][x] == player) {
+        if (owners[y][x] == player) {
             // 3. 移動可能場所の判定
             for (let direction of directions) {
                 let px = x + (direction[0] * player);
                 let py = y + (direction[1] * player);
                 if (px >= 0 && px < 9 && py >= 0 && py < 9) {
-                    if (board[py][px] != player) {
-                        movable_board[py][px] = true;
+                    if (owners[py][px] != player) {
+                        movables[py][px] = true;
                     }
                 }
                 else {
@@ -86,20 +113,28 @@ class KomaLogic {
             }
         }
         // 4. 移動可能場所の返却
-        return movable_board;
+        return movables;
     }
 
-    continuous_move(board, player, x, y, directions) {
-        // Private Method
-        // 連続的な移動
-
+    /**
+     * 連続的な移動による移動可否を判断する関数
+     * 
+     * @param {number[][]} owners       駒の所有者情報を示す盤面
+     * @param {number} player           手番のプレイヤー
+     * @param {number} x                駒のX座標
+     * @param {number} y                駒のY座標
+     * @param {number[][]} directions   連続的に移動可能な方向
+     * 
+     * @return {number[][]}             移動可否を示す盤面
+     */
+    continuous_move(owners, player, x, y, directions) {
         // 1. 移動可能場所の格納配列作成
-        let movable_board = new Array(9);
+        let movables = new Array(9);
         for (let idx = 0; idx < 9; idx++) {
-            movable_board[idx] = new Array(9).fill(false);
+            movables[idx] = new Array(9).fill(false);
         }
         // 2. 所有情報の確認（駒の所有者でなければ移動不可）
-        if (board[y][x] == player) {
+        if (owners[y][x] == player) {
             // 3. 移動可能場所の判定
             for (let direction of directions) {
                 let px = x;
@@ -108,18 +143,18 @@ class KomaLogic {
                     px = px + (direction[0] * player);
                     py = py + (direction[1] * player);
                     if (px >= 0 && px < 9 && py >= 0 && py < 9) {
-                        if (board[py][px] == player) {
+                        if (owners[py][px] == player) {
                             // 自駒ならbreak
                             break;
                         }
                         else {
-                            if (board[py][px] == O_N) {
+                            if (owners[py][px] == O_N) {
                                 // 空きならtrue
-                                movable_board[py][px] = true;
+                                movables[py][px] = true;
                             }
                             else {
                                 // 相手駒なら移動可にした上でbreak
-                                movable_board[py][px] = true;
+                                movables[py][px] = true;
                                 break;
                             }
                         }
@@ -132,36 +167,107 @@ class KomaLogic {
             }
         }
         // 4. 移動可能場所の返却
-        return movable_board;
+        return movables;
     }
 
-    basic_put(board) {
-        // Private Method.
-        // 通常の駒置き動作
+    /**
+     * 持ち駒の配置可否を判断する関数
+     * 
+     * @param {number[][]} owners   駒の所有者情報を示す盤面
+     * @param {number} player       手番のプレイヤー
+     * 
+     * @return {number[][]}         配置可否を示す盤面
+     */
+    basic_put(owners, player) {
+        // 1. 配置可能場所の格納配列作成
+        let putables = new Array(9);
+        for (let idx = 0; idx < 9; idx++) {
+            putables[idx] = new Array(9).fill(false);
+        }
+        // 2. 配置可否を判断
+        for (let y = 0; y < 9; y++) {
+            for (let x = 0; x < 9; x++) {
+                if (owners[y][x] == O_N) {
+                    switch (this.koma_idx) {
+                        case KOMA_IDX_FU:
+                        case KOMA_IDX_KYOSHA:
+                            // 歩と香車は最上段にはおけない
+                            if (player == O_1 && y >= 1) {
+                                putables[y][x] = true;
+                            }
+                            if (player == O_2 && y <= 7) {
+                                putables[y][x] = true;
+                            }
+                            break;
+                        case KOMA_IDX_KEIMA:
+                            // 桂馬は最上段と２段めにはおけない
+                            if (player == O_1 && y >= 2) {
+                                putables[y][x] = true;
+                            }
+                            if (player == O_2 && y <= 6) {
+                                putables[y][x] = true;
+                            }
+                            break;
+                        default:
+                            putables[y][x] = true;
+                            break;
+                    }
+                }
+            }
+        }
+        return putables;
     }
 
+    /**
+     * 同じ駒のコピーを生成する関数
+     * 
+     * @abstract
+     */
     clone() {
-        // Abstract Method.
         throw new Error("Implementation error. You have to implement the method < clone >");
     }
 
+    /**
+     * 取った際の駒（不成の駒）を生成する関数
+     * 
+     * @abstract
+     */
     captured() {
-        // Abstract Method.
         throw new Error("Implementation error. You have to implement the method < captured >");
     }
 
+    /**
+     * 成駒を生成する関数
+     * 
+     * @abstract
+     */
     promoted() {
-        // Abstract Method
         throw new Error("Implementation error. You have to implement the method < promoted >");
     }
 
-    move(board, player, x, y) {
-        // Abstract Method.
+    /**
+     * 駒を持った際の移動可能座標を計算する関数
+     * 
+     * @param {number[][]} owners   駒の所有者情報を示す盤面
+     * @param {number} player       手番のプレイヤー
+     * @param {number} x            持った駒のX座標（筋）
+     * @param {number} y            持った駒のY座標（段）
+     * 
+     * @abstract
+     */
+    move(owners, player, x, y) {
         throw new Error("Implementation error. You have to implement the method < move >");
     }
 
-    put(board) {
-        // Abstract Method.
+    /**
+     * 駒台の駒を持った際の配置可能座標を計算する関数
+     * 
+     * @param {number[][]} owners    駒の所有者情報を示す盤面
+     * @param {number} player       手番のプレイヤー
+     * 
+     * @abstract
+     */
+    put(owners, player) {
         throw new Error("Implementation error. You have to implement the method < put >");
     }
 }
@@ -175,17 +281,22 @@ export class NoneLogic extends KomaLogic {
     captured() { return null; }
     promoted() { return null; }
 
-    move(board, player, x, y) {
+    move(owners, player, x, y) {
         // すべてfalseで返却
-        let movable_board = new Array(9);
+        let movables = new Array(9);
         for (let idx = 0; idx < 9; idx++) {
-            movable_board[idx] = new Array(9).fill(false);
+            movables[idx] = new Array(9).fill(false);
         }
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-        
+    put(owners, player) {
+        // すべてfalseで返却
+        let putables = new Array(9);
+        for (let idx = 0; idx < 9; idx++) {
+            putables[idx] = new Array(9).fill(false);
+        }
+        return putables;
     }
 }
 
@@ -198,17 +309,40 @@ export class FuLogic extends KomaLogic {
     captured() { return new FuLogic(); }
     promoted() { return new TokinLogic(); }
 
-    move(board, player, x, y) {
-        let movable_board = super.basic_move(board, player, x, y,
+    move(owners, player, x, y) {
+        let movables = super.basic_move(owners, player, x, y,
             [
                 [0, -1]
             ]
         );
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
+    put(owners, player) {
+        // TODO: 打ち歩詰め禁止<================================================
+        return super.basic_put(owners, player);
+    }
 
+    nifuCheck(komas, owners, player, putables) {
+        let new_putables = new Array(9);
+        for (let idx = 0; idx < 9; idx++) {
+            new_putables[idx] = new Array(9).fill(false);
+        }
+        for (let x = 0; x < 9; x++) {
+            let existsFu = false;
+            for (let y = 0; y < 9; y++) {
+                if (komas[y][x].koma_idx == KOMA_IDX_FU && owners[y][x] == player) {
+                    existsFu = true;
+                    break;
+                }
+            }
+            for (let y = 0; y < 9; y++) {
+                if (existsFu == false) {
+                    new_putables[y][x] = putables[y][x];
+                }
+            }
+        }
+        return new_putables;
     }
 }
 
@@ -221,17 +355,17 @@ export class KyoshaLogic extends KomaLogic {
     captured() { return new KyoshaLogic(); }
     promoted() { return new NarikyoLogic(); }
 
-    move(board, player, x, y) {
-        let movable_board = super.continuous_move(board, player, x, y,
+    move(owners, player, x, y) {
+        let movables = super.continuous_move(owners, player, x, y,
             [
                 [0, -1]
             ]
         );
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-
+    put(owners, player) {
+        return super.basic_put(owners, player);
     }
 }
 
@@ -244,18 +378,18 @@ export class KeimaLogic extends KomaLogic {
     captured() { return new KeimaLogic(); }
     promoted() { return new NarikeiLogic(); }
 
-    move(board, player, x, y) {
-        let movable_board = super.basic_move(board, player, x, y,
+    move(owners, player, x, y) {
+        let movables = super.basic_move(owners, player, x, y,
             [
                 [-1, -2],
                 [1, -2]
             ]
         );
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-
+    put(owners, player) {
+        return super.basic_put(owners, player);
     }
 }
 
@@ -268,8 +402,8 @@ export class GinLogic extends KomaLogic {
     captured() { return new GinLogic(); }
     promoted() { return new NariginLogic(); }
 
-    move(board, player, x, y) {
-        let movable_board = super.basic_move(board, player, x, y,
+    move(owners, player, x, y) {
+        let movables = super.basic_move(owners, player, x, y,
             [
                 [-1, -1],
                 [0, -1],
@@ -278,11 +412,11 @@ export class GinLogic extends KomaLogic {
                 [1, 1]
             ]
         );
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-
+    put(owners, player) {
+        return super.basic_put(owners, player);
     }
 }
 
@@ -295,8 +429,8 @@ export class KinLogic extends KomaLogic {
     captured() { return new KinLogic(); }
     promoted() { return null; }
 
-    move(board, player, x, y) {
-        let movable_board = super.basic_move(board, player, x, y,
+    move(owners, player, x, y) {
+        let movables = super.basic_move(owners, player, x, y,
             [
                 [-1, -1],
                 [0, -1],
@@ -306,11 +440,11 @@ export class KinLogic extends KomaLogic {
                 [0, 1]
             ]
         );
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-
+    put(owners, player) {
+        return super.basic_put(owners, player);
     }
 }
 
@@ -323,8 +457,8 @@ export class KakuLogic extends KomaLogic {
     captured() { return new KakuLogic(); }
     promoted() { return new UmaLogic(); }
 
-    move(board, player, x, y) {
-        let movable_board = super.continuous_move(board, player, x, y,
+    move(owners, player, x, y) {
+        let movables = super.continuous_move(owners, player, x, y,
             [
                 [-1, -1],
                 [1, -1],
@@ -332,11 +466,11 @@ export class KakuLogic extends KomaLogic {
                 [1, 1]
             ]
         );
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-
+    put(owners, player) {
+        return super.basic_put(owners, player);
     }
 }
 
@@ -349,8 +483,8 @@ export class HishaLogic extends KomaLogic {
     captured() { return new HishaLogic(); }
     promoted() { return new RyuLogic(); }
 
-    move(board, player, x, y) {
-        let movable_board = super.continuous_move(board, player, x, y,
+    move(owners, player, x, y) {
+        let movables = super.continuous_move(owners, player, x, y,
             [
                 [0, -1],
                 [-1, 0],
@@ -358,11 +492,11 @@ export class HishaLogic extends KomaLogic {
                 [0, 1]
             ]
         );
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-
+    put(owners, player) {
+        return super.basic_put(owners, player);
     }
 }
 
@@ -375,8 +509,8 @@ export class OuLogic extends KomaLogic {
     captured() { return new OuLogic(); }
     promoted() { return null; }
 
-    move(board, player, x, y) {
-        let movable_board = super.basic_move(board, player, x, y,
+    move(owners, player, x, y) {
+        let movables = super.basic_move(owners, player, x, y,
             [
                 [-1, -1],
                 [0, -1],
@@ -388,11 +522,11 @@ export class OuLogic extends KomaLogic {
                 [1, 1]
             ]
         );
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-
+    put(owners, player) {
+        return super.basic_put(owners, player);
     }
 }
 
@@ -405,8 +539,8 @@ export class GyokuLogic extends KomaLogic {
     captured() { return new GyokuLogic(); }
     promoted() { return null; }
 
-    move(board, player, x, y) {
-        let movable_board = super.basic_move(board, player, x, y,
+    move(owners, player, x, y) {
+        let movables = super.basic_move(owners, player, x, y,
             [
                 [-1, -1],
                 [0, -1],
@@ -418,15 +552,15 @@ export class GyokuLogic extends KomaLogic {
                 [1, 1]
             ]
         );
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-
+    put(owners, player) {
+        return super.basic_put(owners, player);
     }
 }
 
-export class TokinLogin extends KomaLogic {
+export class TokinLogic extends KomaLogic {
     constructor() {
         super(KOMA_IDX_TOKIN, "と", "と金", -48, -301);
     }
@@ -435,8 +569,8 @@ export class TokinLogin extends KomaLogic {
     captured() { return new FuLogic(); }
     promoted() { return null; }
 
-    move(board, player, x, y) {
-        let movable_board = super.basic_move(board, player, x, y,
+    move(owners, player, x, y) {
+        let movables = super.basic_move(owners, player, x, y,
             [
                 [-1, -1],
                 [0, -1],
@@ -446,11 +580,11 @@ export class TokinLogin extends KomaLogic {
                 [0, 1]
             ]
         );
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-        
+    put(owners, player) {
+        return super.basic_put(owners, player);
     }
 }
 
@@ -463,8 +597,8 @@ export class NarikyoLogic extends KomaLogic {
     captured() { return new KyoshaLogic(); }
     promoted() { return null; }
 
-    move(board, player, x, y) {
-        let movable_board = super.basic_move(board, player, x, y,
+    move(owners, player, x, y) {
+        let movables = super.basic_move(owners, player, x, y,
             [
                 [-1, -1],
                 [0, -1],
@@ -474,11 +608,11 @@ export class NarikyoLogic extends KomaLogic {
                 [0, 1]
             ]
         );
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-        
+    put(owners, player) {
+        return super.basic_put(owners, player);
     }
 }
 
@@ -491,8 +625,8 @@ export class NarikeiLogic extends KomaLogic {
     captured() { return new KeimaLogic(); }
     promoted() { return null; }
 
-    move(board, player, x, y) {
-        let movable_board = super.basic_move(board, player, x, y,
+    move(owners, player, x, y) {
+        let movables = super.basic_move(owners, player, x, y,
             [
                 [-1, -1],
                 [0, -1],
@@ -502,11 +636,11 @@ export class NarikeiLogic extends KomaLogic {
                 [0, 1]
             ]
         );
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-
+    put(owners, player) {
+        return super.basic_put(owners, player);
     }
 }
 
@@ -519,8 +653,8 @@ export class NariginLogic extends KomaLogic {
     captured() { return new GinLogic(); }
     promoted() { return null; }
 
-    move(board, player, x, y) {
-        let movable_board = super.basic_move(board, player, x, y,
+    move(owners, player, x, y) {
+        let movables = super.basic_move(owners, player, x, y,
             [
                 [-1, -1],
                 [0, -1],
@@ -530,29 +664,29 @@ export class NariginLogic extends KomaLogic {
                 [0, 1]
             ]
         );
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-
+    put(owners, player) {
+        return super.basic_put(owners, player);
     }
 }
 
 export class UmaLogic extends KomaLogic {
     constructor() {
-        super(KOMA_IDX_UMA, "馬", "龍馬", 0, -86);
+        super(KOMA_IDX_UMA, "馬", "龍馬", -48, -86);
     }
 
     clone() { return new UmaLogic(); }
     captured() { return new KakuLogic(); }
     promoted() { return null; }
 
-    move(board, player, x, y) {
-        let movable_board = new Array(9);
+    move(owners, player, x, y) {
+        let movables = new Array(9);
         for (let idx = 0; idx < 9; idx++) {
-            movable_board[idx] = new Array(9).fill(false);
+            movables[idx] = new Array(9).fill(false);
         }
-        let movable_board_1 = super.continuous_move(board, player, x, y,
+        let movables_1 = super.continuous_move(owners, player, x, y,
             [
                 [-1, -1],
                 [1, -1],
@@ -560,7 +694,7 @@ export class UmaLogic extends KomaLogic {
                 [1, 1]
             ]
         );
-        let movable_board_2 = super.basic_move(board, player, x, y,
+        let movables_2 = super.basic_move(owners, player, x, y,
             [
                 [0, -1],
                 [-1, 0],
@@ -570,32 +704,32 @@ export class UmaLogic extends KomaLogic {
         );
         for (let y = 0; y < 9; y++) {
             for (let x = 0; x < 9; x++) {
-                movable_board[y][x] = movable_board_1[y][x] || movable_board_2[y][x];
+                movables[y][x] = movables_1[y][x] || movables_2[y][x];
             }
         }
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-
+    put(owners, player) {
+        return super.basic_put(owners, player);
     }
 }
 
 export class RyuLogic extends KomaLogic {
     constructor() {
-        super(KOMA_IDX_RYU, "龍", "龍王", 0, -43);
+        super(KOMA_IDX_RYU, "龍", "龍王", -48, -43);
     }
     
     clone() { return new RyuLogic(); }
     captured() { return new HishaLogic(); }
     promoted() { return null; }
 
-    move(board, player, x, y) {
-        let movable_board = new Array(9);
+    move(owners, player, x, y) {
+        let movables = new Array(9);
         for (let idx = 0; idx < 9; idx++) {
-            movable_board[idx] = new Array(9).fill(false);
+            movables[idx] = new Array(9).fill(false);
         }
-        let movable_board_1 = super.continuous_move(board, player, x, y,
+        let movables_1 = super.continuous_move(owners, player, x, y,
             [
                 [0, -1],
                 [-1, 0],
@@ -603,7 +737,7 @@ export class RyuLogic extends KomaLogic {
                 [0, 1]
             ]
         );
-        let movable_board_2 = super.basic_move(board, player, x, y,
+        let movables_2 = super.basic_move(owners, player, x, y,
             [
                 [-1, -1],
                 [1, -1],
@@ -613,13 +747,13 @@ export class RyuLogic extends KomaLogic {
         );
         for (let y = 0; y < 9; y++) {
             for (let x = 0; x < 9; x++) {
-                movable_board[y][x] = movable_board_1[y][x] || movable_board_2[y][x];
+                movables[y][x] = movables_1[y][x] || movables_2[y][x];
             }
         }
-        return movable_board;
+        return movables;
     }
 
-    put(board) {
-
+    put(owners, player) {
+        return super.basic_put(owners, player);
     }
 }

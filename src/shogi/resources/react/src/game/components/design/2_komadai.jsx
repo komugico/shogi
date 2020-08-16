@@ -4,6 +4,19 @@ import { Row, Col } from 'react-bootstrap';
 
 import { KomadaiKoma } from './3_koma.jsx';
 
+import { NoneLogic } from '../logic/koma_logic.jsx';
+import { MochigomaLogic } from '../logic/mochigoma_logic.jsx';
+
+import {
+    KOMA_IDX_FU,
+    KOMA_IDX_KYOSHA,
+    KOMA_IDX_KEIMA,
+    KOMA_IDX_GIN,
+    KOMA_IDX_KIN,
+    KOMA_IDX_KAKU,
+    KOMA_IDX_HISHA
+} from '../definition/koma_idx_define.jsx';
+
 export class Komadai extends React.Component {
     constructor() {
         super();
@@ -13,48 +26,72 @@ export class Komadai extends React.Component {
         return (
             <div>
                 <Row class="komadai-row" noGutters>
-                    {this.renderKoma(0, -43)}
-                    {this.renderKomakazu(0)}
-                    {this.renderKoma(0, -86)}
-                    {this.renderKomakazu(0)}
+                    {this.renderKoma(KOMA_IDX_HISHA)}
+                    {this.renderKazu(KOMA_IDX_HISHA)}
+                    {this.renderKoma(KOMA_IDX_KAKU)}
+                    {this.renderKazu(KOMA_IDX_KAKU)}
                     {this.renderMargin()}
                 </Row>
                 <Row class="komadai-row" noGutters>
-                    {this.renderKoma(0, -129)}
-                    {this.renderKomakazu(0)}
-                    {this.renderKoma(0, -172)}
-                    {this.renderKomakazu(0)}
+                    {this.renderKoma(KOMA_IDX_KIN)}
+                    {this.renderKazu(KOMA_IDX_KIN)}
+                    {this.renderKoma(KOMA_IDX_GIN)}
+                    {this.renderKazu(KOMA_IDX_GIN)}
                     {this.renderMargin()}
                 </Row>
                 <Row class="komadai-row" noGutters>
-                    {this.renderKoma(0, -215)}
-                    {this.renderKomakazu(0)}
-                    {this.renderKoma(0, -258)}
-                    {this.renderKomakazu(0)}
-                    {this.renderKoma(0, -301)}
-                    {this.renderKomakazu(0)}
+                    {this.renderKoma(KOMA_IDX_KEIMA)}
+                    {this.renderKazu(KOMA_IDX_KEIMA)}
+                    {this.renderKoma(KOMA_IDX_KYOSHA)}
+                    {this.renderKazu(KOMA_IDX_KYOSHA)}
+                    {this.renderKoma(KOMA_IDX_FU)}
+                    {this.renderKazu(KOMA_IDX_FU)}
                 </Row>
             </div>
         );
     }
 
-    renderKoma(top, left) {
-        return (
-            <KomadaiKoma
-                top={top}
-                left={left}
-            />
-        )
+    renderKoma(koma_idx) {
+        if (this.props.mochigoma.getKomakazu(koma_idx)) {
+            return (
+                <KomadaiKoma
+                    koma={MochigomaLogic.getKoma(koma_idx)}
+                    owner={this.props.owner}
+                    handleGrabMochigoma={this.props.handleGrabMochigoma}
+                />
+            );
+        }
+        else {
+            return (
+                <KomadaiKoma
+                    koma={new NoneLogic()}
+                    owner={this.props.owner}
+                    handleGrabMochigoma={null}
+                />
+            );
+        }
     }
 
-    renderKomakazu(x) {
-        return (
-            <Col className="komadai-moji-col" xl={1} lg={1} md={1} sm={3} xs={3}>
-                <div className="komadai-moji">
-                    <p className="moji">{x}</p>
-                </div>
-            </Col>
-        );
+    renderKazu(koma_idx) {
+        let komakazu = this.props.mochigoma.getKomakazu(koma_idx);
+        if (komakazu > 0) {
+            return (
+                <Col className="komadai-moji-col" xl={1} lg={1} md={1} sm={3} xs={3}>
+                    <div className="komadai-moji">
+                        <p className="moji">{komakazu}</p>
+                    </div>
+                </Col>
+            );
+        }
+        else {
+            return (
+                <Col className="komadai-moji-col" xl={1} lg={1} md={1} sm={3} xs={3}>
+                    <div className="komadai-moji">
+                        <p className="moji"></p>
+                    </div>
+                </Col>
+            );
+        }
     }
 
     renderMargin() {

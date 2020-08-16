@@ -7,6 +7,10 @@ import {
     OWNER_PLAYER2   as O_2
 } from '../definition/owner_define.jsx';
 
+import {
+    KOMA_IDX_FU
+} from '../definition/koma_idx_define.jsx';
+
 export class ShogiLogic {
     static get STATE_WAIT() { return 0; }
     static get STATE_GRAB_KOMA() { return 1; }
@@ -16,12 +20,12 @@ export class ShogiLogic {
         this.turn = 1;
         this.teban = O_1;
         this.state = ShogiLogic.STATE_WAIT;
-        this.move_from_x = 0;
-        this.move_from_y = 0;
+        this.move_from_x = -1;
+        this.move_from_y = -1;
         this.board = new BoardLogic();
         this.action_board = null;
-        this.mochigomas_1 = new MochigomaLogic(O_1);
-        this.mochigomas_2 = new MochigomaLogic(O_2);
+        this.mochigoma_1 = new MochigomaLogic(O_1);
+        this.mochigoma_2 = new MochigomaLogic(O_2);
         this.initActionBoard();
     }
 
@@ -42,6 +46,9 @@ export class ShogiLogic {
     proceed() {
         this.turn = this.turn + 1;
         this.teban = this.teban * -1;
+        this.move_from_x = -1;
+        this.move_from_y = -1;
+        this.state = ShogiLogic.STATE_WAIT;
     }
 
     action(x, y) {
@@ -80,14 +87,21 @@ export class ShogiLogic {
                     // 駒の獲得がある場合
                     let captured = this.board.capture(x, y);
                     if (this.teban == O_1) {
-                        this.mochigomas_1.stock(captured.koma_idx);
+                        this.mochigoma_1.stock(captured.koma_idx);
                     }
                     else {
-                        this.mochigomas_2.stock(captured.koma_idx);
+                        this.mochigoma_2.stock(captured.koma_idx);
                     }
                 }
+                // 移動を実行
                 this.board.move(this.teban, this.move_from_x, this.move_from_y, x, y);
+                // 成りチェックを実行
+                this.board.promoteCheck(this.teban, this.move_from_x, this.move_from_y, x, y);
+                // 動作用盤面を初期化
                 this.initActionBoard();
+                // 手番を進める
+                this.proceed();
+                return true;
             }
             else {
                 // 移動不可の場合
@@ -102,16 +116,62 @@ export class ShogiLogic {
         }
     }
 
-    captureKoma(x, y) {
-        this.initActionBoard();
-    }
-
     grabMochigoma(koma_idx) {
-        this.initActionBoard();
+        let mochigoma = null;
+        if (this.teban == O_1) {
+            mochigoma = this.mochigoma_1;
+        }
+        if (this.teban == O_2) {
+            mochigoma = this.mochigoma_2;
+        }
+        let putable_positions = mochigoma.grab(koma_idx, this.board.getOwners(), this.teban);
+        console.dir("a");
+        if (putable_positions) {
+            this.state = ShogiLogic.STATE_GRAB_MOCHIGOMA;
+            // 二歩禁止
+            console.dir("b");
+            if (koma_idx == KOMA_IDX_FU) {
+                console.dir("c");
+                let new_putable_positions = mochigoma.grabbed.nifuCheck(
+                    this.board.getKomas(),
+                    this.board.getOwners(),
+                    this.teban,
+                    putable_positions
+                );
+                putable_positions = new_putable_positions;
+            }
+            // 格納
+            for (let py = 0; py < 9; py++) {
+                for (let px = 0; px < 9; px++) {
+                    this.action_board[py][px] = putable_positions[py][px];
+                }
+            }
+        }
     }
 
     putMochigoma(x, y) {
-        this.initActionBoard();
+        let mochigoma = null;
+        if (this.teban == O_1) {
+            mochigoma = this.mochigoma_1;
+        }
+        if (this.teban == O_2) {
+            mochigoma = this.mochigoma_2;
+        }
+        let koma = mochigoma.pickGrabbedKoma()
+        if (koma) {
+            // 駒を置く
+            this.board.putKoma(koma, this.teban, x, y);
+            // 動作用盤面を初期化
+            this.initActionBoard();
+            // 手番を進める
+            this.proceed();
+            return true;
+        }
+        else {
+            // 動作用盤面を初期化
+            this.initActionBoard();
+            return false;
+        }
     }
 
     outeCheck(owner) {
@@ -126,12 +186,12 @@ export class ShogiLogic {
     getTeban() { return this.teban; }
     getBoard() { return this.board; }
     getActionBoard() { return this.action_board; }
-    getMochigomas(owner) {
+    getMochigoma(owner) {
         switch (owner) {
             case O_1:
-                return this.mochigomas_1;
+                return this.mochigoma_1;
             case O_2:
-                return this.mochigomas_2;
+                return this.mochigoma_2;
             default:
                 return false;
         }
